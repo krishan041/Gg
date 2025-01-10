@@ -411,7 +411,4 @@ async def moni_handler(client: Client, m: Message):
             if 'testbook' in url:
                 id =  url.split("/")[-2]
                 url =  "https://extractapi.vercel.app/classplus?link=https://cpvod.testbook.com/" + id + "/playlist.m3u8"
-
-            elif 'cpvod.testbook' in url:
-                id =  url.split("/")[-2]
-                url =  "https://extractapi.vercel.app/classplus?link=https://cpvod.testbook.com/" + id + "/playlist.m3u8"
+                
