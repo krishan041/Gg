@@ -178,7 +178,7 @@ async def cookies_handler(client: Client, m: Message):
 
 
 # File paths
-CHANNELS_FILE = "channels_data.json
+CHANNELS_FILE = "channels_data.json"
 
 
 # Function to read channels data
