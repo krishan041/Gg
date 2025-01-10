@@ -400,12 +400,12 @@ async def moni_handler(client: Client, m: Message):
 
             elif 'videos.classplusapp' in url or "tencdn.classplusapp" in url or "webvideos.classplusapp.com" in url or "media-cdn-alisg.classplusapp.com" in url or "videos.classplusapp" in url or "visionias" in url:
                 url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsInN1YiI6IjYwYjAyNzY3ZDM2OWUwMDAyY2Q5ODNlYyIsImlzcyI6Imh0dHBzOi8vYXV0aDAuY29tLyIsImF1ZCI6Imh0dHBzOi8vYXBpLmNsYXNzcGx1c2FwcC5jb20iLCJpYXQiOjE2MzYwNjE0NzUsImV4cCI6MTYzNjA5NzQ3NSwiYXpwIjoib0lQYjRWb1F2dVdUVU1mV0NBR0l4d3pFZ2hUQWJXZ2NydGZQY1pNa1giLCJndHkiOiJwYXNzd29yZCJ9.4t_RP4GZfMy5E6Rk3U5s4h5m4d0yE1M3r6r4k1j4k5g'}).json().get("url")
-
+                
             elif '/master.mpd' in url:
              id =  url.split("/")[-2]
              url =  "https://d26g5bnklkwsh4.cloudfront.net/" + id + "/master.m3u8"
 
-            name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https[...]
+            name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "")
             name = f'{str(count).zfill(3)}) {name1[:60]}'
 
             if 'testbook' in url:
