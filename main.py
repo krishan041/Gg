@@ -416,7 +416,6 @@ async def moni_handler(client: Client, m: Message):
                 id =  url.split("/")[-2]
                 url =  "https://extractapi.vercel.app/classplus?link=https://cpvod.testbook.com/" + id + "/playlist.m3u8"
              
-            if "/master.mpd" in url :
+            if "/master.mpd" in url:
                 if "https://sec1.pw.live/" in url:
-                    url = url.replace("https://sec1.pw.live/","https://d1d34p8vz63oiq.cloudfront
-``
+                    url = url.replace("https://sec1.pw.live/", "https://d1d34p8vz63oiq.cloudfront.net/")
