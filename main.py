@@ -319,7 +319,6 @@ async def remove_all_channels(client, message: Message):
 async def stop_handler(client, message: Message):
     if message.chat.type == "private":
         user_id = str(message.from_user.id)
-            return
 
     await message.reply_text("♦️ 𝐒𝐭𝐨𝐩𝐩𝐞𝐝 ♦️" , True)
     os.execl(sys.executable, sys.executable, *sys.argv)
