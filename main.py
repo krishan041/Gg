@@ -327,7 +327,6 @@ async def stop_handler(client, message: Message):
 async def moni_handler(client: Client, m: Message):
     if m.chat.type == "private":
         user_id = str(m.from_user.id)
-            return
             
     editable = await m.reply_text('𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐀 𝐓𝐱𝐭 𝐅𝐢𝐥𝐞 𝐒𝐞𝐧𝐝 𝐇𝐞𝐫𝐞 ⏍')
 
