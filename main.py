@@ -290,12 +290,6 @@ async def show_users(client, message: Message):
     else:
         await message.reply_text("ℹ️ No users found in the subscription data.")
 
-# 3. /myplan
-@bot.on_message(filters.command("myplan") & filters.private)
-async def my_plan(client, message: Message):
-    user_id = str(message.from_user.id)
-    subscription_data = read_subscription_data()  # Make sure this function is implemented elsewhere
-
     # Define YOUR_ADMIN_ID somewhere in your code
     if user_id == str(YOUR_ADMIN_ID):  # YOUR_ADMIN_ID should be an integer
         await message.reply_text("**✨ You have permanent access!**")
