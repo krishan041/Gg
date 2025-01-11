@@ -226,7 +226,6 @@ async def guide_handler(client: Client, message: Message):
 
 # 1. /adduser
 @bot.on_message(filters.command("adduser") & filters.private)
-6428531614_only
 async def add_user(client, message: Message):
         await message.reply_text(f"User {user_id} added with expiration date {expiration_date}.")
     except ValueError:
