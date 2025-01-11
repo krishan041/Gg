@@ -257,8 +257,6 @@ async def show_users(client, message: Message):
 @bot.on_message(filters.command("add_channel"))
 async def add_channel(client, message: Message):
     user_id = str(message.from_user.id)
-    
-        return
 
     try:
         _, channel_id = message.text.split()
