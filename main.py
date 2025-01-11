@@ -228,9 +228,6 @@ async def guide_handler(client: Client, message: Message):
 @bot.on_message(filters.command("adduser") & filters.private)
 async def add_user(client, message: Message):
         await message.reply_text(f"User {user_id} added with expiration date {expiration_date}.")
-    except ValueError:
-        await message.reply_text("Invalid command format. Use: /adduser <user_id> <expiration_date>")
-
 
 # 2. /removeuser
 @bot.on_message(filters.command("removeuser") & filters.private)
