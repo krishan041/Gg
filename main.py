@@ -298,7 +298,6 @@ def is_admin(user_id):
 @bot.on_message(filters.command("allowed_channels"))
 async def allowed_channels(client, message: Message):
     user_id = message.from_user.id
-        return
 
     channels = read_channels_data()
     if channels:
@@ -309,10 +308,6 @@ async def allowed_channels(client, message: Message):
 @bot.on_message(filters.command("remove_all_channels"))
 async def remove_all_channels(client, message: Message):
     user_id = message.from_user.id
-
-    if not is_admin(user_id):
-        await message.reply_text("❌ You are not authorized to use this command.")
-        return
 
     # Clear the channels data
     write_channels_data([])
