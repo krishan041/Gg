@@ -178,7 +178,7 @@ async def cookies_handler(client: Client, m: Message):
 
 
 # File paths
-SUBSCRIPTION_FILE = "subscription_data.txt"
+SUBSCRIPTION_FILE = "subscription.py"
 CHANNELS_FILE = "channels_data.json"
 
 # Admin ID
