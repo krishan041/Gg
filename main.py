@@ -17,7 +17,6 @@ import yt_dlp as youtube_dl
 from core import download_and_send_video
 import core as helper
 from utils import progress_bar
-from vars import API_ID, API_HASH, BOT_TOKEN
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
@@ -34,14 +33,10 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 # Initialize the bot
 bot = Client(
     "bot",
-    api_id=API_ID,
-    api_hash=API_HASH,
-    bot_token=BOT_TOKEN
+    api_id=os.getenv("API_ID"),
+    api_hash=os.getenv("API_HASH"),
+    bot_token=os.getenv("BOT_TOKEN")
 )
-
-API_ID    = os.environ.get("API_ID", "24495656")
-API_HASH  = os.environ.get("API_HASH", "61afcf68c6429714dd18acd07f246571")
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "7842202956:AAHgKbWG5FSQhRdcovXmqaEYlPMd-dQu630") 
 
 # Define aiohttp routes
 routes = web.RouteTableDef()
@@ -61,267 +56,12 @@ async def start_bot():
 
 async def stop_bot():
     await bot.stop()
-  
-import random
 
-# Inline keyboard for start command
-keyboard = InlineKeyboardMarkup(
-    [
-        [
-            InlineKeyboardButton(text="📞 Contact", url="https://t.me/sanjaykagra86"),
-            InlineKeyboardButton(text="🛠️ Help", url="https://t.me/SSC_Aspirants_7"),
-        ],
-        [
-            InlineKeyboardButton(text="🪄 Updates Channel", url="https://t.me/SSC_Aspirants_7"),
-        ],
-    ]
-)
+# Other parts of your code...
 
-# Inline keyboard for busy status
-Busy = InlineKeyboardMarkup(
-    [
-        [
-            InlineKeyboardButton(text="📞 Contact", url="https://t.me/sanjaykagra86"),
-            InlineKeyboardButton(text="🛠️ Help", url="https://t.me/SSC_Aspirants_7"),
-        ],
-        [
-            InlineKeyboardButton(text="🪄 Updates Channel", url="https://t.me/SSC_Aspirants_7"),
-        ],
-    ]
-)
-
-# Image URLs for the random image feature
-image_urls = [
-    "https://i.ibb.co/dpRKmmj/file-3957.jpg",
-    "https://i.ibb.co/NSbPQ5n/file-3956.jpg",
-    "https://i.ibb.co/Z8R4z0g/file-3962.jpg",
-    "https://i.ibb.co/LtqjVy7/file-3958.jpg",
-    "https://i.ibb.co/bm20zfd/file-3959.jpg",
-    "https://i.ibb.co/0V0BngV/file-3960.jpg",
-    "https://i.ibb.co/rQMXQjX/file-3961.jpg",
-    # Add more image URLs as needed
-]
-
-# Start command handler
-@bot.on_message(filters.command(["start"]))
-async def start_command(bot: Client, message: Message):
-    # Send a loading message
-    loading_message = await bot.send_message(
-        chat_id=message.chat.id,
-        text="Loading... ⏳🔄"
-    )
-  
-    # Choose a random image URL
-    random_image_url = random.choice(image_urls)
-    
-    # Caption for the image
-    caption = (
-        "**𝐇𝐞𝐥𝐥𝐨 𝐃𝐞𝐚𝐫 👋!**\n\n"
-        "➠ **𝐈 𝐚𝐦 𝐚 𝐓𝐞𝐱𝐭 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝𝐞𝐫 𝐁𝐨𝐭 𝐌𝐚𝐝𝐞 𝐖𝐢𝐭𝐡 ♥️**\n"
-        "➠ **Can Extract Videos & PDFs From Your Text File and Upload to Telegram!**\n"
-        "➠ **For Guide Use Command /guide 📖**\n\n"
-        "➠ **Use /moni Command to Download From TXT File** 📄\n\n"
-        "➠ **𝐌𝐚𝐝𝐞 𝐁𝐲:** @SanjayKagra86🩷"
-    )
-
-    # Send the image with caption and buttons
-    await bot.send_photo(
-        chat_id=message.chat.id,
-        photo=random_image_url,
-        caption=caption,
-        reply_markup=keyboard
-    )
-
-    # Delete the loading message
-    await loading_message.delete()
-
-
-COOKIES_FILE_PATH = "youtube_cookies.txt"
-
-@bot.on_message(filters.command("cookies") & filters.private)
-async def cookies_handler(client: Client, m: Message):
-    """
-    Command: /cookies
-    Allows any user to upload a cookies file dynamically.
-    """
-    await m.reply_text(
-        "Please upload the cookies file (.txt format).",
-        quote=True
-    )
-
-    try:
-        # Wait for the user to send the cookies file
-        input_message: Message = await client.listen(m.chat.id)
-
-        # Validate the uploaded file
-        if not input_message.document or not input_message.document.file_name.endswith(".txt"):
-            await m.reply_text("Invalid file type. Please upload a .txt file.")
-            return
-
-        # Download the cookies file
-        downloaded_path = await input_message.download()
-
-        # Read the content of the uploaded file
-        with open(downloaded_path, "r") as uploaded_file:
-            cookies_content = uploaded_file.read()
-
-        # Replace the content of the target cookies file
-        with open(COOKIES_FILE_PATH, "w") as target_file:
-            target_file.write(cookies_content)
-
-        await input_message.reply_text(
-            "✅ Cookies updated successfully.\n📂 Saved in `youtube_cookies.txt`."
-        )
-
-    except Exception as e:
-        await m.reply_text(f"⚠️ An error occurred: {str(e)}")
-
-
-# File paths
-SUBSCRIPTION_FILE = "subscription.py"
-CHANNELS_FILE = "channels_data.json"
-
-# Admin ID
-YOUR_ADMIN_ID = 6428531614
-
-
-# Function to read channels data
-def read_channels_data():
-    if not os.path.exists(CHANNELS_FILE):
-        return []
-    with open(CHANNELS_FILE, "r") as f:
-        return json.load(f)
-
-
-# Function to write channels data
-def write_channels_data(data):
-    with open(CHANNELS_FILE, "w") as f:
-        json.dump(data, f, indent=4)
-
-
-# Admin-only decorator
-def admin_only(func):
-    async def wrapper(client, message: Message):
-        if message.from_user.id != YOUR_ADMIN_ID:
-            await message.reply_text("You are not authorized to use this command.")
-            return
-        await func(client, message)
-    return wrapper
-
-# How to use:-
-@bot.on_message(filters.command("guide"))
-async def guide_handler(client: Client, message: Message):
-    guide_text = (
-        "🔑 **How to get started with Premium**:\n\n"
-        "1. **First of all**, contact the owner and buy a premium plan. 💰\n"
-        "2. **If you are a premium user**, you can check your plan by using `/myplan`. 🔍\n\n"
-        "📖 **Usage**:\n\n"
-        "1. `/add_channel -100{channel_id}` - Add a channel to the bot.\n"
-        "2. `/remove_channel -100{channel_id}` - Remove a channel from the bot.\n"
-        "3. `/moni .txt` file command - Process the .txt file.\n"
-        "4. `/stop` - Stop the task running in the bot. 🚫\n\n"
-        "If you have any questions, feel free to ask! 💬"
-    )
-    await message.reply_text(guide_text)
-
-# 1. /adduser
-@bot.on_message(filters.command("adduser") & filters.private)
-async def add_user(client, message: Message):
-        await message.reply_text(f"User {user_id} added with expiration date {expiration_date}.")
-
-# 2. /removeuser
-@bot.on_message(filters.command("removeuser") & filters.private)
-@admin_only
-async def remove_user(client, message: Message):
-    try:
-        _, user_id = message.text.split()
-        subscription_data = read_subscription_data()
-        subscription_data = [user for user in subscription_data if user[0] != user_id]
-        write_subscription_data(subscription_data)
-        await message.reply_text(f"User {user_id} removed.")
-    except ValueError:
-        await message.reply_text("Invalid command format. Use: /removeuser <user_id>")
-
-YOUR_ADMIN_ID = 6428531614
-
-# Helper function to check admin privilege
-def is_admin(user_id):
-    return user_id == 6428531614
-
-# Command to show all users 
-@bot.on_message(filters.command("users") & filters.private)
-async def show_users(client, message: Message):
-    user_id = message.from_user.id
-
-# 4. /add_channel
-@bot.on_message(filters.command("add_channel"))
-async def add_channel(client, message: Message):
-    user_id = str(message.from_user.id)
-
-    try:
-        _, channel_id = message.text.split()
-        channels = read_channels_data()
-        if channel_id not in channels:
-            channels.append(channel_id)
-            write_channels_data(channels)
-            await message.reply_text(f"Channel {channel_id} added.")
-        else:
-            await message.reply_text(f"Channel {channel_id} is already added.")
-    except ValueError:
-        await message.reply_text("Invalid command format. Use: /add_channel <channel_id>")
-
-
-# 5. /remove_channels
-@bot.on_message(filters.command("remove_channel"))
-async def remove_channel(client, message: Message):
-    user_id = str(message.from_user.id)
-
-    try:
-        _, channel_id = message.text.split()
-        channels = read_channels_data()
-        if channel_id in channels:
-            channels.remove(channel_id)
-            write_channels_data(channels)
-            await message.reply_text(f"Channel {channel_id} removed.")
-        else:
-            await message.reply_text(f"Channel {channel_id} is not in the list.")
-    except ValueError:
-        await message.reply_text("Invalid command format. Use: /remove_channels <channel_id>")
-
-YOUR_ADMIN_ID = 6428531614
-
-# Helper function to check admin privilege
-def is_admin(user_id):
-    return user_id == 6428531614
-
-# Command to show all allowed channels 
-@bot.on_message(filters.command("allowed_channels"))
-async def allowed_channels(client, message: Message):
-    user_id = message.from_user.id
-
-    channels = read_channels_data()
-    if channels:
-        channels_list = "\n".join([f"- {channel}" for channel in channels])
-        await message.reply_text(f"**📋 Allowed Channels:**\n\n{channels_list}")
-
-# Command to remove all channels 
-@bot.on_message(filters.command("remove_all_channels"))
-async def remove_all_channels(client, message: Message):
-    user_id = message.from_user.id
-
-    # Clear the channels data
-    write_channels_data([])
-    await message.reply_text("✅ **All channels have been removed successfully.**")
-
-
-# 6. /stop
-@bot.on_message(filters.command("stop"))
-async def stop_handler(client, message: Message):
-    if message.chat.type == "private":
-        user_id = str(message.from_user.id)
-
-    await message.reply_text("♦️ 𝐒𝐭𝐨𝐩𝐩𝐞𝐝 ♦️" , True)
-    os.execl(sys.executable, sys.executable, *sys.argv)
+# Function to decode URL
+def decode_url(encoded_url):
+    return urllib.parse.unquote(encoded_url)
 
 @bot.on_message(filters.command("moni"))
 async def moni_handler(client: Client, m: Message):
@@ -357,23 +97,25 @@ async def moni_handler(client: Client, m: Message):
             if line:
                 link = line.split("://", 1)
                 if len(link) > 1:
-                    links.append(link)
+                    decoded_link = decode_url(link[1])
+                    links.append([link[0], decoded_link])
 
         os.remove(x)
         print(len(links))
 
-    except:
-        await m.reply_text("∝ 𝐈𝐧𝐯𝐚𝐥𝐢𝐝 𝐟𝐢𝐥𝐞 𝐢𝐧𝐩𝐮𝐭.")
+    except Exception as e:
+        await m.reply_text(f"An error occurred: {str(e)}")
         if os.path.exists(x):
             os.remove(x)
 
-    await editable.edit(f"∝ 𝐓𝐨𝐭𝐚𝐥 𝐋𝐢𝐧𝐤 𝐅𝐨𝐮𝐧𝐝 𝐀𝐫𝐞 🔗** **{len(links)}**\n\n𝐒𝐞𝐧𝐝 𝐅𝐫𝐨𝐦 𝐖𝐡𝐞𝐫𝐞 𝐘𝐨𝐮 𝐖𝐚𝐧𝐭 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐈𝐧𝐢𝐭𝐚𝐥 𝐢𝐬 **1**")
+    await editable.edit(f"∝ 𝐓𝐨𝐭𝐚𝐥 𝐋𝐢𝐧𝐤 𝐅𝐨𝐮𝐧𝐝 𝐀𝐫𝐞 🔗** **{len(links)}**\n\n𝐒𝐞𝐧𝐝 𝐅𝐫𝐨𝐦 𝐖𝐡𝐞𝐫𝐞 𝐘𝐨𝐮 𝐖𝐚𝐧𝐭 𝐓𝐨 𝐃𝐨𝐰𝐧𝐥𝐨𝐚𝐝")
+
     input0: Message = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)               
 
     # This is where you would set up your bot and connect the handle_command function      
-    await editable.edit("**Enter Batch Name or send d for grabing from text filename.**")
+    await editable.edit("**Enter Batch Name or send d for grabbing from text filename.**")
     input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
@@ -382,7 +124,7 @@ async def moni_handler(client: Client, m: Message):
     else:
         b_name = raw_text0
         
-    await editable.edit("∝ 𝐄𝐧𝐭𝐞𝐫 𝐄𝐞𝐬𝐨𝐥𝐮𝐭𝐢𝐨𝐧 🎬\n☞ 144,240,360,480,720,1080\nPlease Choose Quality")
+    await editable.edit("∝ 𝐄𝐧𝐭𝐞𝐫 𝐑𝐞𝐬𝐨𝐥𝐮𝐭𝐢𝐨𝐧 🎬\n☞ 144,240,360,480,720,1080\nPlease Choose Quality")
     input2: Message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
     await input2.delete(True)
@@ -402,10 +144,8 @@ async def moni_handler(client: Client, m: Message):
         else: 
             res = "UN"
     except Exception:
-            res = "UN"
+        res = "UN"
     
-    
-
     await editable.edit("**Enter Your Name or send `de` for use default**")
 
     # Listen for the user's response
@@ -458,22 +198,21 @@ async def moni_handler(client: Client, m: Message):
 
             if "acecwply" in url:
                 cmd = f'yt-dlp -o "{name}.%(ext)s" -f "bestvideo[height<={raw_text2}]+bestaudio" --hls-prefer-ffmpeg --no-keep-video --remux-video mkv --no-warning "{url}"'
-                
 
             if "visionias" in url:
                 async with ClientSession() as session:
-                    async with session.get(url, headers={'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'Accept-Language': 'en-US,en;q=0.9', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive', 'Pragma': 'no-cache', 'Referer': 'http://www.visionias.in/', 'Sec-Fetch-Dest': 'iframe', 'Sec-Fetch-Mode': 'navigate', 'Sec-Fetch-Site': 'cross-site', 'Upgrade-Insecure-Requests': '1', 'User-Agent': 'Mozilla/5.0 (Linux; Android 12; RMX2121) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Mobile Safari/537.36', 'sec-ch-ua': '"Chromium";v="107", "Not=A?Brand";v="24"', 'sec-ch-ua-mobile': '?1', 'sec-ch-ua-platform': '"Android"',}) as resp:
+                    async with session.get(url, headers={'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=[...]
                         text = await resp.text()
                         url = re.search(r"(https://.*?playlist.m3u8.*?)\"", text).group(1)
 
-            elif 'videos.classplusapp' in url or "tencdn.classplusapp" in url or "webvideos.classplusapp.com" in url or "media-cdn-alisg.classplusapp.com" in url or "videos.classplusapp" in url or "videos.classplusapp.com" in url or "media-cdn-a.classplusapp" in url or "media-cdn.classplusapp" in url or "drmcdni" in url:
-             url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsIm9yZ0lkIjoyNjA1LCJ0eXBlIjoxLCJtb2JpbGUiOiI5MTcwODI3NzQyODkiLCJuYW1lIjoiQWNlIiwiZW1haWwiOm51bGwsImlzRmlyc3RMb2dpbiI6dHJ1ZSwiZGVmYXVsdExhbmd1YWdlIjpudWxsLCJjb3VudHJ5Q29kZSI6IklOIiwiaXNJbnRlcm5hdGlvbmFsIjowLCJpYXQiOjE2NDMyODE4NzcsImV4cCI6MTY0Mzg4NjY3N30.hM33P2ai6ivdzxPPfm01LAd4JWv-vnrSxGXqvCirCSpUfhhofpeqyeHPxtstXwe0'}).json()['url']
+            elif 'videos.classplusapp' in url or "tencdn.classplusapp" in url or "webvideos.classplusapp.com" in url or "media-cdn-alisg.classplusapp.com" in url or "videos.classplusapp" in url or "vi[...]
+             url = requests.get(f'https://api.classplusapp.com/cams/uploader/video/jw-signed-url?url={url}', headers={'x-access-token': 'eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgzNjkyMTIsIm9yZ0[...]
 
             elif '/master.mpd' in url:
              id =  url.split("/")[-2]
              url =  "https://d26g5bnklkwsh4.cloudfront.net/" + id + "/master.m3u8"
 
-            name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
+            name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https[...]
             name = f'{str(count).zfill(3)}) {name1[:60]}'
 
             if 'testbook' in url:
@@ -501,7 +240,7 @@ async def moni_handler(client: Client, m: Message):
                 print("counted")
 
             if "edge.api.brightcove.com" in url:
-                bcov = 'bcov_auth=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MjQyMzg3OTEsImNvbiI6eyJpc0FkbWluIjpmYWxzZSwiYXVzZXIiOiJVMFZ6TkdGU2NuQlZjR3h5TkZwV09FYzBURGxOZHowOSIsImlkIjoiZEUxbmNuZFBNblJqVEROVmFWTlFWbXhRTkhoS2R6MDkiLCJmaXJzdF9uYW1lIjoiYVcxV05ITjVSemR6Vm10ak1WUlBSRkF5ZVNzM1VUMDkiLCJlbWFpbCI6Ik5Ga3hNVWhxUXpRNFJ6VlhiR0ppWTJoUk0wMVdNR0pVTlU5clJXSkRWbXRMTTBSU2FHRnhURTFTUlQwPSIsInBob25lIjoiVUhVMFZrOWFTbmQ1ZVcwd1pqUTViRzVSYVc5aGR6MDkiLCJhdmF0YXIiOiJLM1ZzY1M4elMwcDBRbmxrYms4M1JEbHZla05pVVQwOSIsInJlZmVycmFsX2NvZGUiOiJOalZFYzBkM1IyNTBSM3B3VUZWbVRtbHFRVXAwVVQwOSIsImRldmljZV90eXBlIjoiYW5kcm9pZCIsImRldmljZV92ZXJzaW9uIjoiUShBbmRyb2lkIDEwLjApIiwiZGV2aWNlX21vZGVsIjoiU2Ftc3VuZyBTTS1TOTE4QiIsInJlbW90ZV9hZGRyIjoiNTQuMjI2LjI1NS4xNjMsIDU0LjIyNi4yNTUuMTYzIn19.snDdd-PbaoC42OUhn5SJaEGxq0VzfdzO49WTmYgTx8ra_Lz66GySZykpd2SxIZCnrKR6-R10F5sUSrKATv1CDk9ruj_ltCjEkcRq8mAqAytDcEBp72-W0Z7DtGi8LdnY7Vd9Kpaf499P-y3-godolS_7ixClcYOnWxe2nSVD5C9c5HkyisrHTvf6NFAuQC_FD3TzByldbPVKK0ag1UnHRavX8MtttjshnRhv5gJs5DQWj4Ir_dkMcJ4JaVZO3z8j0OxVLjnmuaRBujT-1pavsr1CCzjTbAcBvdjUfvzEhObWfA1-Vl5Y4bUgRHhl1U-0hne4-5fF0aouyu71Y6W0eg'
+                bcov = 'bcov_auth=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MjQyMzg3OTEsImNvbiI6eyJpc0FkbWluIjpmYWxzZSwiYXVzZXIiOiJVMFZ6TkdGU2NuQlZjR3h5TkZwV09FYzBURGxOZHowOSIsImlkIjoiZEUxbmNuZ[...]
                 url = url.split("bcov_auth")[0]+bcov
        
             if "youtu" in url:
@@ -528,8 +267,8 @@ async def moni_handler(client: Client, m: Message):
                      
             try:  
                 
-                cc = f'**🎥 VIDEO ID: {str(count).zfill(3)}.\n\n📄 Title: {name1} {res} ⎳𝓸𝓿𝓮❥❤️━━╬٨ﮩSanju٨ـﮩـ Love❥.mkv\n\n<pre><code>🔖 Batch Name: {b_name}</code></pre>\n\n📥 Extracted By : {CR}**'
-                cc1 = f'**📁 FILE ID: {str(count).zfill(3)}.\n\n📄 Title: {name1} 𝄟✮͢🦋⃟≛⃝m✮⃝oni.pdf \n\n<pre><code>🔖 Batch Name: {b_name}</code></pre>\n\n📥 Extracted By : {CR}**'
+                cc = f'**🎥 VIDEO ID: {str(count).zfill(3)}.\n\n📄 Title: {name1} {res} ⎳𝓸𝓿𝓮❥❤️━━╬٨ﮩSanju٨ـﮩـ Love❥.mkv\n\n<pre><code>🔖 Batch Name: {b_name}</co[...]
+                cc1 = f'**📁 FILE ID: {str(count).zfill(3)}.\n\n📄 Title: {name1} 𝄟✮͢🦋⃟≛⃝m✮⃝oni.pdf \n\n<pre><code>🔖 Batch Name: {b_name}</code></pre>\n\n📥 Extracted By : [...]
                                  
                 
                 if "drive" in url:
