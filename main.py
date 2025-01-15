@@ -212,7 +212,7 @@ async def moni_handler(client: Client, m: Message):
 }).text
             name = f'{str(count).zfill(3)}) {name1[:60]}'
             
-name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "")
+            name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "")
           
             if 'testbook' in url:
                 id =  url.split("/")[-2]
