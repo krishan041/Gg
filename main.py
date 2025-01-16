@@ -225,4 +225,8 @@ def construct_yt_dlp_command(url, name, quality):
         ytf = f"b[height<={quality}]/bv[height<={quality}]+ba/b/bv+ba"
         return f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
-bot.run()
+if __name__ == "__main__":
+    try:
+        bot.run()
+    except Exception as e:
+        print(f"Failed to start bot: {e}")
