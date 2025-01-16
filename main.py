@@ -33,8 +33,8 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQ
 # Initialize the bot
 bot = Client(
     "bot",
-    api_id=os.getenv("API_ID"),
-    api_hash=os.getenv("API_HASH"),
+    api_id=os.getenv("27536109"),
+    api_hash=os.getenv("b84d7d4dfa33904d36b85e1ead16bd63"),
     bot_token=os.getenv("BOT_TOKEN")
 )
 
