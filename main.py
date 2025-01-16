@@ -30,12 +30,25 @@ from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 
+# Ensure the environment variables are set
+API_ID = os.getenv("API_ID")
+API_HASH = os.getenv("API_HASH")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+# Debug: print environment variables to verify they are set correctly
+print("API_ID:", API_ID)
+print("API_HASH:", API_HASH)
+print("BOT_TOKEN:", BOT_TOKEN)
+
+if not API_ID or not API_HASH or not BOT_TOKEN:
+    raise ValueError("API_ID, API_HASH, and BOT_TOKEN environment variables must be set")
+
 # Initialize the bot
 bot = Client(
     "bot",
-    api_id=os.getenv("27536109"),
-    api_hash=os.getenv("b84d7d4dfa33904d36b85e1ead16bd63"),
-    bot_token=os.getenv("BOT_TOKEN")
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN
 )
 
 # Define aiohttp routes
